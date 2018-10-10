@@ -1,48 +1,67 @@
 package ru.javawebinar.topjava.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealDaoInMemory implements MealDao {
-    private List<Meal> meals;
+    public static final Logger log = LoggerFactory.getLogger(MealDaoInMemory.class);
+
+    private AtomicInteger count;
+    private Map<Integer, Meal> meals;
 
     public MealDaoInMemory() {
-        meals = new CopyOnWriteArrayList<>();
-        add(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
-        add(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000));
-        add(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500));
-        add(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000));
-        add(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500));
-        add(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510));
-        add(new Meal(LocalDateTime.of(2015, Month.JUNE, 29, 20, 0), "Ужин", 900));
+        meals = new ConcurrentHashMap<>();
+        count = new AtomicInteger(0);
+        save(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
+        save(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000));
+        save(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500));
+        save(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000));
+        save(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500));
+        save(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510));
+        save(new Meal(LocalDateTime.of(2015, Month.JUNE, 29, 20, 0), "Ужин", 900));
     }
 
-    @Override
-    public void add(Meal meal) {
-        meals.add(meal);
-    }
 
     @Override
     public void delete(int id) {
-
+        if(meals.containsKey(id)) {
+            meals.remove(id);
+        }
+        log.info("Meal deleted successfully, Meal Id=" + id);
     }
 
     @Override
-    public void update(Meal meal) {
+    public void save(Meal meal) {
+        int id = meal.getId();
 
+        if(meals.containsKey(id)) {
+            meals.put(id, meal);
+            log.info("Meal updated successfully, Meal Details=" + meal);
+        }
+        else {
+            id = count.incrementAndGet();
+            meal.setId(id);
+            meals.put(id, meal);
+            log.info("Meal saved successfully, Meal Details=" + meal);
+        }
     }
 
     @Override
     public List<Meal> getAll() {
-        return meals;
+        return new ArrayList<>(meals.values());
     }
 
     @Override
-    public Meal getbyId(int id) {
-        return null;
+    public Meal getById(int id) {
+        return meals.getOrDefault(meals.get(id), null);
     }
 }

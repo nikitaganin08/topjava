@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.dao.MealDao;
 import ru.javawebinar.topjava.dao.MealDaoInMemory;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
 
@@ -27,8 +29,27 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirect to meals");
 
-        request.setAttribute("mealList", MealsUtil.getFilteredWithExceeded(mealDao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
-        request.getRequestDispatcher("/meals.jsp").forward(request, response);
-//        response.sendRedirect("meals.jsp");
+        String action = request.getParameter("action");
+
+        if (action == null) {
+            request.setAttribute("mealList",
+                    MealsUtil.getFilteredWithExceeded(mealDao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
+            request.getRequestDispatcher("/meals.jsp").forward(request, response);
+        }
+        else if(action.equalsIgnoreCase("delete")) {
+            int mealId = Integer.valueOf(Objects.requireNonNull(request.getParameter("id")));
+            mealDao.delete(mealId);
+            response.sendRedirect("meals");
+        }
+        else {
+            int mealId = Integer.parseInt(request.getParameter("id"));
+            Meal meal = mealDao.getById(mealId);
+            request.setAttribute("meal", meal);
+            request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     }
 }

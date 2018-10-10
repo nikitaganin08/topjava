@@ -6,13 +6,11 @@ import java.util.List;
 
 public interface MealDao {
 
-    void add(Meal meal);
+    void save(Meal meal);
 
     void delete(int id);
 
-    void update(Meal meal);
-
     List<Meal> getAll();
 
-    Meal getbyId(int id);
+    Meal getById(int id);
 }
