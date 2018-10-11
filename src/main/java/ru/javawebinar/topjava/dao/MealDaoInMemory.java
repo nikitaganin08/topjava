@@ -40,19 +40,15 @@ public class MealDaoInMemory implements MealDao {
     }
 
     @Override
-    public void save(Meal meal) {
-        int id = meal.getId();
+    public Meal save(Meal meal) {
 
-        if(meals.containsKey(id)) {
-            meals.put(id, meal);
-            log.info("Meal updated successfully, Meal Details=" + meal);
-        }
-        else {
-            id = count.incrementAndGet();
-            meal.setId(id);
-            meals.put(id, meal);
+        if(meal.getId() == null) {
+            meal.setId(count.incrementAndGet());
+            meals.put(meal.getId(), meal);
             log.info("Meal saved successfully, Meal Details=" + meal);
+            return meal;
         }
+        return meals.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override

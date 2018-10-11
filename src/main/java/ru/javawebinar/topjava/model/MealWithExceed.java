@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class MealWithExceed {
 
-    private int id;
+    private final Integer id;
 
     private final LocalDateTime dateTime;
 
@@ -14,7 +14,7 @@ public class MealWithExceed {
 
     private final boolean exceed;
 
-    public MealWithExceed(int id, LocalDateTime dateTime, String description, int calories, boolean exceed) {
+    public MealWithExceed(Integer id, LocalDateTime dateTime, String description, int calories, boolean exceed) {
         this.id = id;
         this.dateTime = dateTime;
         this.description = description;
@@ -24,10 +24,6 @@ public class MealWithExceed {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public LocalDateTime getDateTime() {

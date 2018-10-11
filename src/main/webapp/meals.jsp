@@ -29,6 +29,6 @@
         </c:forEach>
     </tbody>
 </table>
-<p><a href="meals?action=insert">Add meal</a></p>
+<p><a href="meals?action=create">Add meal</a></p>
 </body>
 </html>

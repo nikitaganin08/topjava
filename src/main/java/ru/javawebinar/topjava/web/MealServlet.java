@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
@@ -43,13 +44,22 @@ public class MealServlet extends HttpServlet {
         }
         else {
             int mealId = Integer.parseInt(request.getParameter("id"));
-            Meal meal = mealDao.getById(mealId);
+            final Meal meal = action.equals("create") ?
+                    new Meal(LocalDateTime.now(), "", 1000) :
+                    mealDao.getById(mealId);
             request.setAttribute("meal", meal);
-            request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
+            request.getRequestDispatcher("/mealEdit.jsp").forward(request, response);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getParameter("id");
+        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+                LocalDateTime.parse(request.getParameter("datetime")),
+                request.getParameter("description"),
+                Integer.valueOf(request.getParameter("calories")));
+        mealDao.save(meal);
+        response.sendRedirect("meals");
     }
 }
