@@ -20,7 +20,7 @@ public class InMemoryAdminRestControllerTest {
 
     @BeforeClass
     public static void beforeClass() {
-        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app-test.xml");
         System.out.println("\n" + Arrays.toString(appCtx.getBeanDefinitionNames()) + "\n");
         controller = appCtx.getBean(AdminRestController.class);
     }
@@ -37,7 +37,6 @@ public class InMemoryAdminRestControllerTest {
         repository.init();
     }
 
-    @Ignore
     @Test
     public void delete() throws Exception {
         controller.delete(UserTestData.USER_ID);
@@ -47,7 +46,6 @@ public class InMemoryAdminRestControllerTest {
     }
 
 
-    @Ignore
     @Test(expected = NotFoundException.class)
     public void deleteNotFound() throws Exception {
         controller.delete(10);
