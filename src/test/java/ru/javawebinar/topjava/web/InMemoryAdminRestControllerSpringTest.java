@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.web;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class InMemoryAdminRestControllerSpringTest {
         repository.init();
     }
 
+    @Ignore
     @Test
     public void delete() throws Exception {
         controller.delete(UserTestData.USER_ID);
@@ -40,6 +42,7 @@ public class InMemoryAdminRestControllerSpringTest {
         Assert.assertEquals(users.iterator().next(), ADMIN);
     }
 
+    @Ignore
     @Test(expected = NotFoundException.class)
     public void deleteNotFound() throws Exception {
         controller.delete(10);
