@@ -23,7 +23,7 @@ public class RootController {
     }
 
     @GetMapping("/meals")
-    public String meals(Model model) {
+    public String meals() {
         return "meals";
     }
 }
