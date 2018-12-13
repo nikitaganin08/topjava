@@ -119,5 +119,7 @@
     <c:forEach var="key" items='<%=new String[]{"common.deleted","common.saved","common.enabled","common.disabled","common.errorStatus"}%>'>
     i18n["${key}"] = "<spring:message code="${key}"/>";
     </c:forEach>
+    $(document).ready(
+    jQuery('#dateTime').datetimepicker());
 </script>
 </html>
